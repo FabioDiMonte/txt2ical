@@ -1,0 +1,22 @@
+tell application "iCal" to tell calendar "SerieTV" to delete every event
+tell application "iCal" to tell calendar "SerieTV" to delete every todo
+
+tell application "Finder"
+    set data_folder to folder POSIX file "/Users/macbookpro/Movies/SerieTV/__NEXT__/"
+    set all_items to every item of data_folder
+end tell
+
+set my text item delimiters to {" "}
+
+repeat with cur_item in all_items
+    set nm to (text 1 thru -5 of ((the name of cur_item) as string))
+    set YY to (text 1 thru 4 of nm) as number
+    set MM to (text 6 thru 7 of nm) as number
+    set DD to (text 9 thru 10 of nm) as number
+    set event_date to date ((DD & "/" & MM & "/" & YY) as string)
+    set event_desc to (text items 2 thru -1 of nm) as string
+    tell application "iCal" to tell calendar "SerieTV" to make new event with properties {summary:event_desc, start date:event_date, description:"", allday event:true}
+    tell application "iCal" to make new todo at end of todos of calendar "SerieTV" with properties {priority:medium priority, summary:event_desc, due date:event_date}
+end repeat
+
+display alert "FATTO!"
